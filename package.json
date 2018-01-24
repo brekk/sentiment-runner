@@ -1,0 +1,33 @@
+{
+  "bin": "./sentiment.js",
+  "dependencies": {
+    "f-utility": "^3.5.1",
+    "fluture": "^8.0.1",
+    "retext": "^5.0.0",
+    "retext-english": "^3.0.0",
+    "retext-sentiment": "^4.1.0",
+    "to-vfile": "^2.1.2",
+    "unified": "^6.1.6",
+    "unist-util-inspect": "^4.1.2",
+    "vfile": "^2.3.0",
+    "vfile-reporter": "^4.0.0"
+  },
+  "name": "sentiment-runner",
+  "version": "0.0.0",
+  "description": "retext + sentiment + cli",
+  "main": "sentiment.js",
+  "devDependencies": {},
+  "scripts": {
+    "test": "node ./sentiment.js --file example.txt"
+  },
+  "keywords": [
+    "sentiment",
+    "retext",
+    "nlp",
+    "natural",
+    "language",
+    "processing"
+  ],
+  "author": "brekk",
+  "license": "ISC"
+}
