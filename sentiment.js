@@ -6,7 +6,9 @@ const sentiment = require(`retext-sentiment`)
 const inspect = require(`unist-util-inspect`)
 const unified = require(`unified`)
 const FUTILITY = require(`f-utility`)
+const {trace} = require(`xtrace`)
 const {
+  I,
   chain,
   curry,
   pipe,
@@ -42,22 +44,26 @@ function iife() {
   const atIndex = curry((index, arr) => arr[index])
   const kids = prop(`children`)
   const thingsWhichFeel = filter((x) => x && x.data && x.data.polarity !== 0)
-  const getRootNode = pipe(
-    kids,
-    atIndex(0)
-  )
+  const values = prop(`value`)
+  const flattenResults = map(({children, data}) => ({
+    value: children && children[0] && children[0].value,
+    data: data.valence
+  }))
+
+  const filterByNodeType = (match) => filter(({type}) => (
+    type === match
+  ))
 
   const getFeels = pipe(
-    getRootNode,
-    kids,
-    filter(({type}) => type === `SentenceNode`),
-    thingsWhichFeel,
-    chain(kids),
-    thingsWhichFeel,
-    map(({children, data}) => ({
-      value: children && children[0] && children[0].value,
-      data: data.valence
-    }))
+    kids, // root to children
+    chain(kids), // children to grandchildren + nulls
+    filter(I), // no nulls
+    filterByNodeType(`SentenceNode`), // only sentences
+    thingsWhichFeel, // sentences with sentiments
+    chain(kids), // the great grand-kids
+    filterByNodeType(`WordNode`), // only words
+    thingsWhichFeel, // the words with feels
+    flattenResults
   )
 
   console.log(getFeels(tree))
